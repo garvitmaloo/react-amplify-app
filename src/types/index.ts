@@ -1,3 +1,5 @@
-export type CounterActionPayload = {
-  number: number;
+import { ReactElement } from "react";
+
+export type ChildrenProps = {
+  children: ReactElement;
 };
