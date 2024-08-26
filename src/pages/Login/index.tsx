@@ -1,8 +1,12 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
+import { signIn } from "aws-amplify/auth";
+import { useNavigate } from "react-router-dom";
 
 import EmailInput from "../../components/EmailInput";
 import PasswordInput from "../../components/PasswordInput";
+import useAppDispatch from "../../hooks/useAppDispatch";
+import { authActions } from "../../store/actions";
 
 const styles = {
   mainContainer: {
@@ -26,6 +30,8 @@ const styles = {
 const Login = () => {
   const emailInputRef = React.useRef<HTMLInputElement>(null);
   const passwordInputRef = React.useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleEmailChange = (value: string) => {
     if (emailInputRef.current) {
@@ -39,10 +45,22 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log({ email: emailInputRef.current?.value, password: passwordInputRef.current?.value });
+    try {
+      const { isSignedIn } = await signIn({
+        username: emailInputRef.current!.value,
+        password: passwordInputRef.current!.value,
+      });
+
+      if (isSignedIn) {
+        dispatch(authActions.setIsSignedIn(true));
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(`Something went wrong: ${err}`);
+    }
   };
 
   return (
