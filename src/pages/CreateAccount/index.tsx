@@ -1,5 +1,7 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, TextField } from "@mui/material";
+import { signUp, confirmSignUp } from "aws-amplify/auth";
+import { useNavigate } from "react-router-dom";
 
 import EmailInput from "../../components/EmailInput";
 import PasswordInput from "../../components/PasswordInput";
@@ -26,9 +28,12 @@ const styles = {
 const CreateAccount = () => {
   const emailInputRef = React.useRef<HTMLInputElement>(null);
   const passwordInputRef = React.useRef<HTMLInputElement>(null);
+  const otpInputRef = React.useRef<HTMLInputElement>(null);
+  const [showOTPVerificationUI, setShowOTPVerificationUI] = React.useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleEmailChange = (value: string) => {
-    if (emailInputRef.current) {
+    if (value && emailInputRef.current) {
       emailInputRef.current.value = value;
     }
   };
@@ -39,10 +44,49 @@ const CreateAccount = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOTPChange = (value: string) => {
+    if (otpInputRef.current) {
+      otpInputRef.current.value = value;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log({ email: emailInputRef.current?.value, password: passwordInputRef.current?.value });
+    try {
+      const { userId } = await signUp({
+        username: emailInputRef.current!.value,
+        password: passwordInputRef.current!.value,
+        options: {
+          userAttributes: {
+            email: emailInputRef.current?.value,
+          },
+        },
+      });
+
+      if (userId) {
+        setShowOTPVerificationUI(true);
+      }
+    } catch (e) {
+      console.error(`Something went wrong: ${e}`);
+    }
+  };
+
+  const handleVerifyOTP = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const { isSignUpComplete } = await confirmSignUp({
+        username: emailInputRef.current!.value,
+        confirmationCode: otpInputRef.current!.value,
+      });
+
+      if (isSignUpComplete) {
+        navigate("/login");
+      }
+    } catch (e) {
+      console.error(`Something went wrong: ${e}`);
+    }
   };
 
   return (
@@ -58,17 +102,33 @@ const CreateAccount = () => {
         }}
       >
         <Typography variant='h5' sx={{ fontWeight: 600 }}>
-          Create Account
+          {showOTPVerificationUI ? "Verify OTP" : "Create Account"}
         </Typography>
       </Box>
 
       <Box sx={styles.formContainer}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{ display: showOTPVerificationUI ? "none" : "block" }}>
           <EmailInput handleChange={handleEmailChange} ref={emailInputRef} />
           <PasswordInput handleChange={handlePasswordChange} ref={passwordInputRef} />
 
           <Button variant='contained' sx={styles.submitButton} type='submit'>
             Sign Up
+          </Button>
+        </form>
+
+        <form
+          onSubmit={handleVerifyOTP}
+          style={{ display: showOTPVerificationUI ? "block" : "none" }}
+        >
+          <TextField
+            onChange={(e) => handleOTPChange(e.target.value)}
+            placeholder='Enter OTP'
+            ref={otpInputRef}
+            sx={{ width: "100%" }}
+          />
+
+          <Button variant='contained' sx={styles.submitButton} type='submit'>
+            Verify OTP
           </Button>
         </form>
       </Box>
