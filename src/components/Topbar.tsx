@@ -6,9 +6,16 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import { signOut } from "aws-amplify/auth";
+
+import useAppSelector from "../hooks/useAppSelector";
+import useAppDispatch from "../hooks/useAppDispatch";
+import { authActions } from "../store/actions";
 
 export default function TopBar() {
   const navigate = useNavigate();
+  const { isSignedIn } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const handleLogoClick = () => {
     navigate("/");
@@ -20,6 +27,17 @@ export default function TopBar() {
 
   const handleLoginClick = () => {
     navigate("/login");
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      await signOut();
+      dispatch(authActions.setIsSignedIn(false));
+      dispatch(authActions.setUserEmail(null));
+      navigate("/login");
+    } catch (err) {
+      console.error(`Something went wrong: ${err}`);
+    }
   };
 
   return (
@@ -36,15 +54,23 @@ export default function TopBar() {
             POLAROID APP
           </Typography>
           <Box>
-            <Button
-              sx={{ color: "#fff", textTransform: "none" }}
-              onClick={handleCreateAccountClick}
-            >
-              Create Account
-            </Button>
-            <Button sx={{ color: "#fff", textTransform: "none" }} onClick={handleLoginClick}>
-              Login
-            </Button>
+            {!isSignedIn ? (
+              <>
+                <Button
+                  sx={{ color: "#fff", textTransform: "none" }}
+                  onClick={handleCreateAccountClick}
+                >
+                  Create Account
+                </Button>
+                <Button sx={{ color: "#fff", textTransform: "none" }} onClick={handleLoginClick}>
+                  Login
+                </Button>
+              </>
+            ) : (
+              <Button sx={{ color: "#fff", textTransform: "none" }} onClick={handleLogoutClick}>
+                Logout
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
