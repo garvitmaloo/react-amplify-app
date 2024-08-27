@@ -15,3 +15,10 @@ export type PasswordInput = {
 export type NewPolaroidFormComponent = {
   onSubmit: (value: PolaroidData) => void;
 };
+
+export type PolaroidComponent = {
+  title: string;
+  date: string;
+  image: string;
+  id: string;
+};
