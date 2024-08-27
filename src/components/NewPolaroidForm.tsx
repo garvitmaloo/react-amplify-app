@@ -1,6 +1,9 @@
 import React from "react";
 import { Typography, Box, TextField, Button } from "@mui/material";
 
+import { validateFile } from "../utils/util-methods";
+import { NewPolaroidFormComponent } from "../types";
+
 const styles = {
   newPolaroidContainer: {
     padding: 2,
@@ -12,7 +15,7 @@ const styles = {
   },
 };
 
-const NewPolaroidForm = () => {
+const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -22,7 +25,21 @@ const NewPolaroidForm = () => {
     const date = formData.get("Date") as string;
     const file = formData.get("File") as File;
 
-    console.log({ title, date, file });
+    let isValid = false,
+      message = "No file uploaded";
+
+    if (file.name) {
+      isValid = validateFile(file).isValid;
+      message = validateFile(file).message;
+    }
+
+    try {
+      if (file.name && !isValid) throw new Error(message);
+
+      onSubmit({ title, date, file });
+    } catch (error) {
+      console.error(`Something went wrong: ${error}`);
+    }
   };
 
   return (
