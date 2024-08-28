@@ -1,6 +1,7 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
 import { generateClient } from "aws-amplify/data";
+import { uploadData, getUrl } from "aws-amplify/storage";
 
 import useAppSelector from "../../hooks/useAppSelector";
 import NewPolaroidForm from "../../components/NewPolaroidForm";
@@ -43,17 +44,27 @@ const Home: React.FC = () => {
 
   const handleSubmitData = async (data: PolaroidData) => {
     const { title, date, file } = data;
-    let image = "";
-
-    if (file) {
-      // upload the file and get the URL
-    }
 
     try {
+      const { result } = uploadData({
+        path: `polaroid_picture/${file!.name}`,
+        data: file!,
+        options: {
+          contentType: file!.type,
+          bucket: "Polaroid_Storage",
+        },
+      });
+
+      const { path } = await result;
+
+      const { url } = await getUrl({
+        path,
+      });
+
       const { data: response, errors } = await client.models.Polaroid.create({
         title,
         date,
-        image,
+        image: url.href,
       });
 
       if (errors) {
