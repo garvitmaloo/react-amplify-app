@@ -22,3 +22,9 @@ export type PolaroidComponent = {
   image: string;
   id: string;
 };
+
+export type Snackbar = {
+  message: string;
+  onClose: () => void;
+  hideAfterTime?: number;
+};
