@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography } from "@mui/material";
 import { generateClient } from "aws-amplify/data";
-import { uploadData, getUrl } from "aws-amplify/storage";
+import { getUrl, uploadData } from "aws-amplify/storage";
 
 import useAppSelector from "../../hooks/useAppSelector";
 import NewPolaroidForm from "../../components/NewPolaroidForm";
@@ -32,7 +32,20 @@ const Home: React.FC = () => {
         throw new Error(errors[0].message);
       }
 
-      setPolaroidData(data);
+      const modifiedData = data.map(async (item) => {
+        const { url } = await getUrl({
+          path: item.image!,
+          options: {
+            expiresIn: 7 * 24 * 60 * 60, // 7 days
+          },
+        });
+
+        return { ...item, image: url.href };
+      });
+
+      const actualData = await Promise.all(modifiedData);
+
+      setPolaroidData(actualData);
     } catch (error) {
       setSnackBar({
         message: `Failed to fetch data: ${error}`,
@@ -62,14 +75,10 @@ const Home: React.FC = () => {
 
       const { path } = await result;
 
-      const { url } = await getUrl({
-        path,
-      });
-
       const { data: response, errors } = await client.models.Polaroid.create({
         title,
         date,
-        image: url.href,
+        image: path,
       });
 
       if (errors) {
@@ -115,7 +124,7 @@ const Home: React.FC = () => {
                   key={polaroid.id}
                   title={polaroid.title}
                   date={polaroid.date}
-                  image={polaroid.image === "" ? "/preview-unavailable.webp" : polaroid.image}
+                  image={polaroid.image}
                   id={polaroid.id}
                 />
               ))}
