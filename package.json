@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "generate_amplify_outputs": "npx ampx generate outputs",
-    "build": "tsc && npm run generate_amplify_outputs && vite build",
+    "build": "npm run generate_amplify_outputs && tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
