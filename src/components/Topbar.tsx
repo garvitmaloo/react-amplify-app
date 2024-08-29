@@ -1,10 +1,5 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import { CssBaseline, AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "aws-amplify/auth";
 
@@ -41,7 +36,7 @@ export default function TopBar() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <div style={{ display: "flex" }}>
       <CssBaseline />
       <AppBar component='nav'>
         <Toolbar>
@@ -53,7 +48,7 @@ export default function TopBar() {
           >
             POLAROID APP
           </Typography>
-          <Box>
+          <div>
             {!isSignedIn ? (
               <>
                 <Button
@@ -71,9 +66,9 @@ export default function TopBar() {
                 Logout
               </Button>
             )}
-          </Box>
+          </div>
         </Toolbar>
       </AppBar>
-    </Box>
+    </div>
   );
 }

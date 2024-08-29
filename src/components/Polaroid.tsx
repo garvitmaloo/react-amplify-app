@@ -1,20 +1,9 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import { PolaroidComponent } from "../types";
 
 const styles = {
-  polaroidContainer: {
-    maxWidth: "360px",
-    height: "520px",
-    border: "1px solid #e9ecef",
-    borderRadius: "4px",
-    backgroundColor: "#fdfdfd",
-    color: "#333",
-    padding: "16px",
-    display: "flex",
-    flexDirection: "column",
-  },
   image: {
     width: "100%",
     height: "400px",
@@ -26,7 +15,19 @@ const styles = {
 
 const Polaroid: React.FC<PolaroidComponent> = ({ title, date, image }) => {
   return (
-    <Box sx={styles.polaroidContainer}>
+    <div
+      style={{
+        maxWidth: "360px",
+        height: "520px",
+        border: "1px solid #e9ecef",
+        borderRadius: "4px",
+        backgroundColor: "#fdfdfd",
+        color: "#333",
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <img
         src={image}
         alt='Polaroid'
@@ -34,7 +35,7 @@ const Polaroid: React.FC<PolaroidComponent> = ({ title, date, image }) => {
         height={400}
       />
 
-      <Box>
+      <div>
         <Typography sx={styles.polaroidTitle}>{title}</Typography>
 
         <Typography>
@@ -44,8 +45,8 @@ const Polaroid: React.FC<PolaroidComponent> = ({ title, date, image }) => {
             year: "numeric",
           })}
         </Typography>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

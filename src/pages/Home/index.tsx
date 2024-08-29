@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 import { generateClient } from "aws-amplify/data";
 import { uploadData, getUrl } from "aws-amplify/storage";
 
@@ -12,8 +12,8 @@ import SimpleSnackbar from "../../components/Snackbar";
 
 const styles = {
   newPolaroidContainer: {
-    padding: 2,
-    marginY: 0,
+    padding: "24px",
+    margin: 0,
   },
 };
 
@@ -102,14 +102,14 @@ const Home: React.FC = () => {
         <>
           <NewPolaroidForm onSubmit={handleSubmitData} />
 
-          <Box sx={{ ...styles.newPolaroidContainer, marginTop: 2 }}>
+          <div style={{ ...styles.newPolaroidContainer, marginTop: 2 }}>
             {(polaroidData as PolaroidDTO[]).length === 0 && (
               <Typography sx={{ marginBottom: 1, fontWeight: 600 }} variant='h6'>
                 No Polaroids.. Try adding a new one!
               </Typography>
             )}
 
-            <Box sx={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
               {(polaroidData as PolaroidDTO[]).map((polaroid) => (
                 <Polaroid
                   key={polaroid.id}
@@ -119,8 +119,8 @@ const Home: React.FC = () => {
                   id={polaroid.id}
                 />
               ))}
-            </Box>
-          </Box>
+            </div>
+          </div>
         </>
       )}
 
