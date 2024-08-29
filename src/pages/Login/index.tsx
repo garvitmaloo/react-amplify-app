@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import { signIn } from "aws-amplify/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -11,17 +11,16 @@ import SimpleSnackbar from "../../components/Snackbar";
 
 const styles = {
   mainContainer: {
-    borderRadius: 2,
+    borderRadius: "4px",
     border: "1px solid #e9ecef",
-    marginY: 16,
-    marginX: "auto",
-    width: 400,
+    margin: "120px auto",
+    width: "400px",
   },
-  inputStyles: { width: "100%", marginY: 1 },
-  formContainer: { marginY: 2, padding: 3 },
+  inputStyles: { width: "100%", margin: "16px 0" },
+  formContainer: { margin: "16px 0", padding: "12px" },
   submitButton: {
-    marginTop: 3,
-    paddingY: 1.5,
+    marginTop: "16px",
+    padding: "15px 0",
     color: "#e9ecef",
     width: "100%",
     fontWeight: 600,
@@ -74,9 +73,9 @@ const Login = () => {
 
   return (
     <>
-      <Box sx={styles.mainContainer}>
-        <Box
-          sx={{
+      <div style={styles.mainContainer}>
+        <div
+          style={{
             borderRadius: "2, 2, 0, 0",
             backgroundColor: "#e9ecef",
             height: 100,
@@ -88,9 +87,9 @@ const Login = () => {
           <Typography variant='h5' sx={{ fontWeight: 600 }}>
             Log In
           </Typography>
-        </Box>
+        </div>
 
-        <Box sx={styles.formContainer}>
+        <div style={styles.formContainer}>
           <form onSubmit={handleSubmit}>
             <EmailInput handleChange={handleEmailChange} ref={emailInputRef} />
             <PasswordInput handleChange={handlePasswordChange} ref={passwordInputRef} />
@@ -99,8 +98,8 @@ const Login = () => {
               Sign In
             </Button>
           </form>
-        </Box>
-      </Box>
+        </div>
+      </div>
       {snackBar.show && <SimpleSnackbar message={snackBar.message} onClose={handleSnackBarClose} />}
     </>
   );

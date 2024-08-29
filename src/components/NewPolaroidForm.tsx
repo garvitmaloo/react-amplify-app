@@ -1,13 +1,13 @@
 import React from "react";
-import { Typography, Box, TextField, Button } from "@mui/material";
+import { Typography, TextField, Button } from "@mui/material";
 
 import { validateFile } from "../utils/util-methods";
 import { NewPolaroidFormComponent } from "../types";
 
 const styles = {
   newPolaroidContainer: {
-    padding: 2,
-    marginY: 0,
+    padding: "24px",
+    margin: 0,
   },
   formContainer: { display: "flex", gap: "1rem", margin: "1rem 0" },
   inputs: {
@@ -43,17 +43,17 @@ const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
   };
 
   return (
-    <Box sx={styles.newPolaroidContainer}>
+    <div style={styles.newPolaroidContainer}>
       <Typography sx={{ marginBottom: 1, fontWeight: 600 }} variant='h6'>
         Add new polaroid
       </Typography>
 
-      <Box>
+      <div>
         <form
           onSubmit={handleFormSubmit}
           style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
         >
-          <Box sx={styles.formContainer}>
+          <div style={styles.formContainer}>
             <TextField
               name='Title'
               variant='outlined'
@@ -63,14 +63,14 @@ const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
             />
             <TextField name='Date' variant='outlined' type='date' sx={styles.inputs} />
             <TextField name='File' type='file' sx={styles.inputs} />
-          </Box>
+          </div>
 
           <Button variant='contained' type='submit'>
             Add
           </Button>
         </form>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
