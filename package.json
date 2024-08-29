@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "generate_amplify_outputs": "npx ampx generate outputs",
+    "build": "tsc && npm run generate_amplify_outputs && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
