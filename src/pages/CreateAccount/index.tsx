@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import EmailInput from "../../components/EmailInput";
 import PasswordInput from "../../components/PasswordInput";
+import SimpleSnackbar from "../../components/Snackbar";
 
 const styles = {
   mainContainer: {
@@ -26,6 +27,7 @@ const styles = {
 };
 
 const CreateAccount = () => {
+  const [snackBar, setSnackBar] = React.useState({ show: false, message: "" });
   const emailInputRef = React.useRef<HTMLInputElement>(null);
   const passwordInputRef = React.useRef<HTMLInputElement>(null);
   const otpInputRef = React.useRef<HTMLInputElement>(null);
@@ -68,7 +70,10 @@ const CreateAccount = () => {
         setShowOTPVerificationUI(true);
       }
     } catch (e) {
-      console.error(`Something went wrong: ${e}`);
+      setSnackBar({
+        show: true,
+        message: `Something went wrong: ${e}`,
+      });
     }
   };
 
@@ -85,54 +90,68 @@ const CreateAccount = () => {
         navigate("/login");
       }
     } catch (e) {
-      console.error(`Something went wrong: ${e}`);
+      setSnackBar({ show: true, message: `Something went wrong: ${e}` });
     }
   };
 
+  const handleSnackBarClose = () => {
+    setSnackBar({
+      message: "",
+      show: false,
+    });
+  };
+
   return (
-    <Box sx={styles.mainContainer}>
-      <Box
-        sx={{
-          borderRadius: "2, 2, 0, 0",
-          backgroundColor: "#e9ecef",
-          height: 100,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant='h5' sx={{ fontWeight: 600 }}>
-          {showOTPVerificationUI ? "Verify OTP" : "Create Account"}
-        </Typography>
-      </Box>
-
-      <Box sx={styles.formContainer}>
-        <form onSubmit={handleSubmit} style={{ display: showOTPVerificationUI ? "none" : "block" }}>
-          <EmailInput handleChange={handleEmailChange} ref={emailInputRef} />
-          <PasswordInput handleChange={handlePasswordChange} ref={passwordInputRef} />
-
-          <Button variant='contained' sx={styles.submitButton} type='submit'>
-            Sign Up
-          </Button>
-        </form>
-
-        <form
-          onSubmit={handleVerifyOTP}
-          style={{ display: showOTPVerificationUI ? "block" : "none" }}
+    <>
+      <Box sx={styles.mainContainer}>
+        <Box
+          sx={{
+            borderRadius: "2, 2, 0, 0",
+            backgroundColor: "#e9ecef",
+            height: 100,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <TextField
-            onChange={(e) => handleOTPChange(e.target.value)}
-            placeholder='Enter OTP'
-            ref={otpInputRef}
-            sx={{ width: "100%" }}
-          />
+          <Typography variant='h5' sx={{ fontWeight: 600 }}>
+            {showOTPVerificationUI ? "Verify OTP" : "Create Account"}
+          </Typography>
+        </Box>
 
-          <Button variant='contained' sx={styles.submitButton} type='submit'>
-            Verify OTP
-          </Button>
-        </form>
+        <Box sx={styles.formContainer}>
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: showOTPVerificationUI ? "none" : "block" }}
+          >
+            <EmailInput handleChange={handleEmailChange} ref={emailInputRef} />
+            <PasswordInput handleChange={handlePasswordChange} ref={passwordInputRef} />
+
+            <Button variant='contained' sx={styles.submitButton} type='submit'>
+              Sign Up
+            </Button>
+          </form>
+
+          <form
+            onSubmit={handleVerifyOTP}
+            style={{ display: showOTPVerificationUI ? "block" : "none" }}
+          >
+            <TextField
+              onChange={(e) => handleOTPChange(e.target.value)}
+              placeholder='Enter OTP'
+              ref={otpInputRef}
+              sx={{ width: "100%" }}
+            />
+
+            <Button variant='contained' sx={styles.submitButton} type='submit'>
+              Verify OTP
+            </Button>
+          </form>
+        </Box>
       </Box>
-    </Box>
+
+      {snackBar.show && <SimpleSnackbar message={snackBar.message} onClose={handleSnackBarClose} />}
+    </>
   );
 };
 

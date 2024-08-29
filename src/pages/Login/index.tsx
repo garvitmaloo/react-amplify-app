@@ -7,6 +7,7 @@ import EmailInput from "../../components/EmailInput";
 import PasswordInput from "../../components/PasswordInput";
 import useAppDispatch from "../../hooks/useAppDispatch";
 import { authActions } from "../../store/actions";
+import SimpleSnackbar from "../../components/Snackbar";
 
 const styles = {
   mainContainer: {
@@ -28,6 +29,7 @@ const styles = {
 };
 
 const Login = () => {
+  const [snackBar, setSnackBar] = React.useState({ show: false, message: "" });
   const emailInputRef = React.useRef<HTMLInputElement>(null);
   const passwordInputRef = React.useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
@@ -59,38 +61,48 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      console.error(`Something went wrong: ${err}`);
+      setSnackBar({
+        show: true,
+        message: `Something went wrong: ${err}`,
+      });
     }
   };
 
+  const handleSnackBarClose = () => {
+    setSnackBar({ show: false, message: "" });
+  };
+
   return (
-    <Box sx={styles.mainContainer}>
-      <Box
-        sx={{
-          borderRadius: "2, 2, 0, 0",
-          backgroundColor: "#e9ecef",
-          height: 100,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant='h5' sx={{ fontWeight: 600 }}>
-          Log In
-        </Typography>
-      </Box>
+    <>
+      <Box sx={styles.mainContainer}>
+        <Box
+          sx={{
+            borderRadius: "2, 2, 0, 0",
+            backgroundColor: "#e9ecef",
+            height: 100,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant='h5' sx={{ fontWeight: 600 }}>
+            Log In
+          </Typography>
+        </Box>
 
-      <Box sx={styles.formContainer}>
-        <form onSubmit={handleSubmit}>
-          <EmailInput handleChange={handleEmailChange} ref={emailInputRef} />
-          <PasswordInput handleChange={handlePasswordChange} ref={passwordInputRef} />
+        <Box sx={styles.formContainer}>
+          <form onSubmit={handleSubmit}>
+            <EmailInput handleChange={handleEmailChange} ref={emailInputRef} />
+            <PasswordInput handleChange={handlePasswordChange} ref={passwordInputRef} />
 
-          <Button variant='contained' sx={styles.submitButton} type='submit'>
-            Sign In
-          </Button>
-        </form>
+            <Button variant='contained' sx={styles.submitButton} type='submit'>
+              Sign In
+            </Button>
+          </form>
+        </Box>
       </Box>
-    </Box>
+      {snackBar.show && <SimpleSnackbar message={snackBar.message} onClose={handleSnackBarClose} />}
+    </>
   );
 };
 
