@@ -1,6 +1,6 @@
 const validateFile = (file: File): { isValid: boolean; message: string } => {
   const fileTypeRegex = /^image\/.+$/;
-  const maxSizeInMB = 10;
+  const maxSizeInMB = 3;
   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
   // Check file type

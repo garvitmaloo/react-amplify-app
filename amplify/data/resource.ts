@@ -5,7 +5,7 @@ const schema = a.schema({
     .model({
       title: a.string().required(),
       date: a.date(),
-      image: a.string(),
+      image: a.string().required(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
