@@ -40,7 +40,7 @@ const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
 
       onSubmit({ title, date, file });
     } catch (error) {
-      setSnackBar({ show: true, message: `Error: ${error}` });
+      setSnackBar({ show: true, message: `${error}` });
     }
   };
 
