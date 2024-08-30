@@ -3,6 +3,7 @@ import { Typography, TextField, Button } from "@mui/material";
 
 import { validateFile } from "../utils/util-methods";
 import { NewPolaroidFormComponent } from "../types";
+import SimpleSnackbar from "./Snackbar";
 
 const styles = {
   newPolaroidContainer: {
@@ -16,6 +17,8 @@ const styles = {
 };
 
 const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
+  const [snackBar, setSnackBar] = React.useState({ show: false, message: "" });
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -28,18 +31,21 @@ const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
     let isValid = false,
       message = "No file uploaded";
 
-    if (file.name) {
-      isValid = validateFile(file).isValid;
-      message = validateFile(file).message;
-    }
+    const fileValidationResult = validateFile(file);
+    isValid = fileValidationResult.isValid;
+    message = fileValidationResult.message;
 
     try {
       if (file.name && !isValid) throw new Error(message);
 
       onSubmit({ title, date, file });
     } catch (error) {
-      console.error(`Something went wrong: ${error}`);
+      setSnackBar({ show: true, message: `${error}` });
     }
+  };
+
+  const handleSnackBarClose = () => {
+    setSnackBar({ show: false, message: "" });
   };
 
   return (
@@ -60,9 +66,10 @@ const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
               type='text'
               label='Title'
               sx={styles.inputs}
+              required
             />
             <TextField name='Date' variant='outlined' type='date' sx={styles.inputs} />
-            <TextField name='File' type='file' sx={styles.inputs} />
+            <TextField name='File' type='file' sx={styles.inputs} required />
           </div>
 
           <Button variant='contained' type='submit'>
@@ -70,6 +77,8 @@ const NewPolaroidForm: React.FC<NewPolaroidFormComponent> = ({ onSubmit }) => {
           </Button>
         </form>
       </div>
+
+      {snackBar.show && <SimpleSnackbar message={snackBar.message} onClose={handleSnackBarClose} />}
     </div>
   );
 };

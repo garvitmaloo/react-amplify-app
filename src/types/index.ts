@@ -7,7 +7,7 @@ export type ChildrenProps = {
 export type PolaroidData = {
   title: string;
   date: string;
-  file?: File;
+  file: File;
 };
 
 export type PolaroidDTO = {
